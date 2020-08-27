@@ -8,7 +8,7 @@ import {
   Divider,
 } from 'react-native-paper';
 
-import Colors from '../constants/Colors';
+import Colors from '../../constants/Colors';
 
 type Props = {
   cancel: () => void;

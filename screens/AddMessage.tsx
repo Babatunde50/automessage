@@ -21,13 +21,15 @@ import * as short from 'short-uuid';
 import Icon from 'react-native-vector-icons/Entypo';
 
 import Colors from '../constants/Colors';
-import Listening from '../components/Listening';
-import Template from '../components/Template';
-import Repeat from "../components/Repeat";
+import Listening from '../components/Modal/Listening';
+import Template from '../components/Modal/Template';
+import Repeat from "../components/Modal/Repeat";
+import RepeatUntil from "../components/Modal/RepeatUntil";
 import {
   AddMessageScreenNavigationProp,
   AddMessageScreenRouteProp,
 } from '../navigation/AppNavigator';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 // import CarrierInfo from 'react-native-carrier-info';
 
 type Props = {
@@ -47,7 +49,8 @@ type State = {
   selectedContacts: any;
   isMessageError: boolean;
   showMenu: boolean;
-  repeatOptions: string;
+  repeatOption: string;
+  repeatUntilOption: string;
   showMoreOptions: boolean;
   countDown: boolean;
   askMe: boolean;
@@ -68,7 +71,8 @@ class AddMessage extends Component<Props, State> {
     messages: [],
     isMessageError: false,
     showMenu: false,
-    repeatOptions: 'no-repeat',
+    repeatOption: "Does not repeat",
+    repeatUntilOption: "Forever",
     showMoreOptions: false,
     countDown: false,
     askMe: false,
@@ -223,8 +227,15 @@ class AddMessage extends Component<Props, State> {
               />
             )}
             {this.state.modalType === 'template' && (
-              // <Template cancel={this._hideModal} />
-              <Repeat cancel={this._hideModal} />
+              <Template cancel={this._hideModal} />
+            )}
+            {this.state.modalType === "repeatOptions" && (
+              <Repeat cancel={this._hideModal} chosedOption={this.state.repeatOption} getChosedOption={(val) => {
+                this.setState({ repeatOption: val })
+               }} />
+            )}
+            {this.state.modalType === "repeatUntil" && (
+              <RepeatUntil cancel={this._hideModal} chosedOption={this.state.repeatUntilOption} getChosedOption={val => this.setState({ repeatUntilOption: val})} />
             )}
           </View>
         </Modal>
@@ -429,13 +440,28 @@ class AddMessage extends Component<Props, State> {
           </Button>
           {this.state.showMoreOptions && (
             <View>
-              <View style={ { ...styles.options, paddingVertical: 9 } }>
-                <Icon style={{paddingRight: 12}} name="loop" size={30} color={Colors.primary} />
-                <View>
-                  <Text style={{fontWeight: "900"}} >Repeat</Text>
-                  <Text>Does not repeat</Text>
+              <TouchableHighlight underlayColor="#DDD" activeOpacity={0.25} onPress={() => { this._showModal('repeatOptions');  }} >
+                <View style={ { ...styles.options, paddingVertical: 9 } }>
+                  <Icon style={{paddingRight: 12}} name="loop" size={30} color={Colors.primary} />
+                  <View>
+                    <Text style={{fontWeight: "900"}}>Repeat</Text>
+                    <Text> { this.state.repeatOption} </Text>
+                  </View>
                 </View>
-              </View>
+              </TouchableHighlight>
+              {
+                this.state.repeatOption && this.state.repeatOption !== "Does not repeat" && (
+                  <TouchableHighlight underlayColor="#DDD" activeOpacity={0.25} onPress={() => { this._showModal('repeatUntil') }} >
+                    <View style={ { ...styles.options, paddingVertical: 9 } }>
+                      <Icon style={{paddingRight: 12}} name="ccw" size={30} color={Colors.primary} />
+                      <View>
+                        <Text style={{fontWeight: "900"}}>Repeat until</Text>
+                        <Text> { this.state.repeatUntilOption} </Text>
+                      </View>
+                    </View>
+                  </TouchableHighlight>
+                )
+              }
               <View style={styles.optionsSwitch}>
                 <View style={styles.options}>
                   <Icon style={{paddingRight: 12}} name="clock" size={30} color={Colors.accent} />
