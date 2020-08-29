@@ -9,18 +9,21 @@ type Props = {
   cancel: () => void;
   chosedOption: string;
   getChosedOption: (chosedOption: string) => void;
+  showDayTimeModal: () => void;
+  showCustomModal: () => void;
 };
 
-const Repeat = ({cancel, chosedOption, getChosedOption}: Props) => {
+const Repeat = ({cancel, chosedOption, getChosedOption, showDayTimeModal, showCustomModal }: Props) => {
   const [chosenOption, setChosenOption] = useState(chosedOption);
   const REPEAT_OPTIONS = [
     'Does not repeat',
     'Hourly',
     'Daily',
     'Every Weekday (Mon-Fri)',
-    'Weekly',
-    'Monthly',
-    'Yearly',
+    'Weekly (Saturday)',
+    'Monthly (The last Saturday) ',
+    'Yearly (25 December)',
+    'Several times a day',
     'Custom',
   ];
   return (
@@ -29,7 +32,10 @@ const Repeat = ({cancel, chosedOption, getChosedOption}: Props) => {
         <TouchableHighlight
           underlayColor="#DDD"
           activeOpacity={0.25}
-          onPress={() => setChosenOption(option)}>
+          key={option}
+          onPress={() => {
+            setChosenOption(option)
+          }}>
           <View style={styles.showcase}>
             <IconButton
               icon={
@@ -50,6 +56,14 @@ const Repeat = ({cancel, chosedOption, getChosedOption}: Props) => {
           mode="text"
           onPress={() => {
             getChosedOption(chosenOption);
+            if( chosenOption === 'Several times a day') {
+              showDayTimeModal();
+              return;
+            }
+            if( chosenOption === 'Custom') {
+              showCustomModal()
+              return;
+            }
             cancel();
           }}
           color={Colors.primary}>

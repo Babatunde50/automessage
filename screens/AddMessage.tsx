@@ -30,6 +30,8 @@ import {
   AddMessageScreenRouteProp,
 } from '../navigation/AppNavigator';
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import TimeDayDate from "../components/Modal/TimeDayDate";
+import Custom from "../components/Modal/Custom";
 // import CarrierInfo from 'react-native-carrier-info';
 
 type Props = {
@@ -55,6 +57,8 @@ type State = {
   countDown: boolean;
   askMe: boolean;
   notify: boolean
+  chosedDayTime: {time: Date | null, selected: boolean, id: string }[];
+  customTime: { day?: number, time?: string, skipWeekends?: boolean}
 };
 
 class AddMessage extends Component<Props, State> {
@@ -76,7 +80,9 @@ class AddMessage extends Component<Props, State> {
     showMoreOptions: false,
     countDown: false,
     askMe: false,
-    notify: false
+    notify: false,
+    chosedDayTime: [],
+    customTime: {},
   };
 
   constructor(props: Props) {
@@ -230,13 +236,28 @@ class AddMessage extends Component<Props, State> {
               <Template cancel={this._hideModal} />
             )}
             {this.state.modalType === "repeatOptions" && (
-              <Repeat cancel={this._hideModal} chosedOption={this.state.repeatOption} getChosedOption={(val) => {
+              <Repeat showCustomModal={() => this.setState({modalType: "custom"}) } showDayTimeModal={() => this.setState({modalType: "repeatingTime"}) } cancel={this._hideModal} chosedOption={this.state.repeatOption} getChosedOption={(val) => {
                 this.setState({ repeatOption: val })
                }} />
             )}
             {this.state.modalType === "repeatUntil" && (
               <RepeatUntil cancel={this._hideModal} chosedOption={this.state.repeatUntilOption} getChosedOption={val => this.setState({ repeatUntilOption: val})} />
             )}
+            { this.state.modalType === "custom" && (
+              <Custom getChosedOption={(val) => {
+                this.setState({
+                  customTime: val
+                })
+              }} cancel={this._hideModal} />
+            ) }
+            {
+              this.state.modalType === "repeatingTime" && (
+                <TimeDayDate cancel={this._hideModal} getChosedOption={(val) => {
+                  console.log(val)
+                  this.setState({ chosedDayTime: val })
+                }} />
+              )
+            }
           </View>
         </Modal>
         <View style={{marginVertical: 8}}>
