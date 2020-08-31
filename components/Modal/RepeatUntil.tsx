@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, TouchableHighlight} from 'react-native';
 import {IconButton, Text, Button} from 'react-native-paper';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import Colors from '../../constants/Colors';
 
@@ -8,9 +9,10 @@ type Props = {
   cancel: () => void;
   chosedOption: string;
   getChosedOption: (chosedOption: string) => void;
+  showRepeatTimesModal: () => void;
 };
 
-const RepeatUntil = ({cancel, chosedOption, getChosedOption}: Props) => {
+const RepeatUntil = ({cancel, chosedOption, showRepeatTimesModal, getChosedOption}: Props) => {
   const [chosenOption, setChosenOption] = useState(chosedOption);
   const REPEAT_OPTIONS = [
     'Forever',
@@ -18,6 +20,15 @@ const RepeatUntil = ({cancel, chosedOption, getChosedOption}: Props) => {
     'End by a repeat count',
     'Until I receive a call or an SMS message',
   ];
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setTimePickerVisibility(false);
+  };
   return (
     <View style={styles.container}>
       {REPEAT_OPTIONS.map((option) => (
@@ -44,6 +55,14 @@ const RepeatUntil = ({cancel, chosedOption, getChosedOption}: Props) => {
         <Button
           mode="text"
           onPress={() => {
+            if(chosenOption === "End by a date") {
+              showDatePicker()
+              return;
+            }
+            if(chosenOption === 'End by a repeat count') {
+              showRepeatTimesModal();
+              return;
+            }
             getChosedOption(chosenOption);
             cancel();
           }}
@@ -51,6 +70,19 @@ const RepeatUntil = ({cancel, chosedOption, getChosedOption}: Props) => {
           OK
         </Button>
       </View>
+      <DateTimePickerModal
+        isVisible={isTimePickerVisible}
+        minimumDate={new Date()}
+        mode="date"
+        onConfirm={(date: Date) => {
+          getChosedOption(date.toISOString());
+          cancel();
+          hideDatePicker();
+        }}
+        onCancel={() => {
+          hideDatePicker();
+        }}
+      />
     </View>
   );
 };
