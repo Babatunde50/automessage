@@ -33,6 +33,7 @@ import Listening from '../components/Modal/Listening';
 import Template from '../components/Modal/Template';
 import Repeat from '../components/Modal/Repeat';
 import RepeatUntil from '../components/Modal/RepeatUntil';
+import HeaderButton from '../components/UI/HeaderButton';
 import {
   AddMessageScreenNavigationProp,
   AddMessageScreenRouteProp,
@@ -41,6 +42,8 @@ import {TouchableHighlight} from 'react-native-gesture-handler';
 import TimeDayDate from '../components/Modal/TimeDayDate';
 import Custom from '../components/Modal/Custom';
 import RepeatTimes from '../components/Modal/RepeatTimes';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import Realm from '../utils/db';
 // import CarrierInfo from 'react-native-carrier-info';
 
 type Props = {
@@ -105,6 +108,26 @@ class AddMessage extends Component<Props, State> {
     Voice.onSpeechEnd = this.onSpeechEnd;
     Voice.onSpeechError = this.onSpeechError;
     Voice.onSpeechResults = this.onSpeechResults;
+
+    props.navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item title="Save" iconName="checkmark" onPress={() => {
+            Realm.then(realm => {
+              realm.write(() => {
+                realm.create('Test', { test: "This is testing"  });
+              });
+
+              let test = realm.objects('Test');
+
+              console.log(test);
+            }).catch(error => {
+              console.log(error);
+            });
+          }} />
+        </HeaderButtons>
+      ),
+    });
   }
 
   componentDidUpdate(prevProps: any) {

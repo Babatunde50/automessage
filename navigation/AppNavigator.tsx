@@ -111,7 +111,7 @@ export const ScheduleNavigator = () => {
       <ScheduleStackNavigator.Screen
         name="AddMessage"
         component={AddMessage}
-        options={({navigation}) => {
+        options={({navigation, route}) => {
           return {
             headerLeft: () => (
               <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -121,15 +121,6 @@ export const ScheduleNavigator = () => {
                   onPress={() => {
                     navigation.goBack();
                   }}
-                />
-              </HeaderButtons>
-            ),
-            headerRight: () => (
-              <HeaderButtons HeaderButtonComponent={HeaderButton} >
-                <Item 
-                  title="Save"
-                  iconName="checkmark"
-                  onPress={() => { console.log("SAVED!!!")}}
                 />
               </HeaderButtons>
             ),
