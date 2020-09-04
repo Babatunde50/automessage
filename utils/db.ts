@@ -18,12 +18,5 @@ const MessageSchema = {
     }
 }
 
-const TestSchema = {
-    name: 'Test',
-    properties: {
-        test: 'string'
-    }
-}
-
 // Get the default Realm with support for our objects
-export default Realm.open({schema: [MessageSchema, TestSchema]})
+export default Realm.open({schema: [MessageSchema]})

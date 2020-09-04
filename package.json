@@ -17,6 +17,7 @@
     "@react-navigation/native": "^5.7.1",
     "@react-navigation/stack": "^5.7.1",
     "@types/randomcolor": "^0.5.5",
+    "dayjs": "^1.8.35",
     "randomcolor": "^0.6.2",
     "react": "16.13.1",
     "react-native": "0.63.2",

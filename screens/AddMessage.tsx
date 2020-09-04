@@ -115,12 +115,24 @@ class AddMessage extends Component<Props, State> {
           <Item title="Save" iconName="checkmark" onPress={() => {
             Realm.then(realm => {
               realm.write(() => {
-                realm.create('Test', { test: "This is testing"  });
+                realm.create('Message', { 
+                  id: 2,
+                  messages: this.state.messages.map( (message: any) => message.message),
+                  sendingDate: this.state.sendingDate,
+                  sendingTime: this.state.sendingTime,
+                  mobileNumbers: Array.from(this.state.selectedContacts),
+                  repeat: this.state.repeatOption,
+                  repeatUntil: this.state.repeatUntilOption,
+                  countDown: this.state.countDown,
+                  askMe: this.state.askMe,
+                  notify: this.state.notify,
+                  note: this.state.note
+                 });
               });
 
-              let test = realm.objects('Test');
+              let message = realm.objects('Message');
 
-              console.log(test);
+              console.log(message);
             }).catch(error => {
               console.log(error);
             });
